@@ -37,34 +37,45 @@ describe("Band, Musician, and Song Models", () => {
 
   test("can update a Band", async () => {
     const band = await Band.create({ name: "Dolly Mixture", genre: "Twee" });
-    await band.update({genre: "indie pop"});
+    await band.update({ genre: "indie pop" });
     const updated = await Band.findByPk(band.id);
-    expect(updated).toEqual(expect.objectContaining({
-        name: "Dolly Mixture",      
-        genre: "Indie Pop"          
-    }));
+    expect(updated).toEqual(
+      expect.objectContaining({
+        name: "Dolly Mixture",
+        genre: "indie pop",
+      })
+    );
   });
 
   test("can update a Musician", async () => {
-    const musician = await Musician.create({ name: "Amelia Fletcher", instrument: "Vocals" });
+    const musician = await Musician.create({
+      name: "Amelia Fletcher",
+      instrument: "Vocals",
+    });
     await musician.update({ instrument: "Guitar" });
     const updatedMusician = await Musician.findByPk(musician.id);
-    expect(updatedMusician).toEqual(expect.objectContaining({
-        name: "Amelia Fletcher",      
-        instrument: "Guitar"          
-    }));
-});
+    expect(updatedMusician).toEqual(
+      expect.objectContaining({
+        name: "Amelia Fletcher",
+        instrument: "Guitar",
+      })
+    );
+  });
 
   test("can delete a Band", async () => {
     const band = await Band.create({ name: "Dolly Mixture", genre: "Twee" });
     await band.destroy();
-
     const deletedBand = await Band.findByPk(band.id);
     expect(deletedBand).toBeNull();
   });
 
   test("can delete a Musician", async () => {
-    // TODO - test deleting a musician
-    expect("NO TEST").toBe("EXPECTED VALUE HERE");
+    const musician = await Musician.create({
+      name: "Amelia Fletcher",
+      instrument: "Vocals",
+    });
+    await musician.destroy();
+    const deletedMusician = await Musician.findByPk(musician.id);
+    expect(deletedMusician).toBeNull();
   });
 });
