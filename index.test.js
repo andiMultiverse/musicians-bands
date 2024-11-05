@@ -1,44 +1,70 @@
-const { sequelize } = require('./db');
-const { Band, Musician, Song } = require('./index')
+const { sequelize } = require("./db");
+const { Band, Musician, Song } = require("./index");
 
-describe('Band, Musician, and Song Models', () => {
-    /**
-     * Runs the code prior to all tests
-     */
-    beforeAll(async () => {
-        // the 'sync' method will create tables based on the model class
-        // by setting 'force:true' the tables are recreated each time the 
-        // test suite is run
-        await sequelize.sync({ force: true });
-    })
+describe("Band, Musician, and Song Models", () => {
+  /**
+   * Runs the code prior to all tests
+   */
+  beforeAll(async () => {
+    // the 'sync' method will create tables based on the model class
+    // by setting 'force:true' the tables are recreated each time the
+    // test suite is run
+    await sequelize.sync({ force: true });
+  });
 
-    test('can create a Band', async () => {
-        // TODO - test creating a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
-    })
+  test("can create a Band", async () => {
+    const band = await Band.create({ name: "Dolly Mixture", genre: "Twee" });
+    expect(band).toEqual(
+      expect.objectContaining({
+        name: "Dolly Mixture",
+        genre: "Twee",
+      })
+    );
+  });
 
-    test('can create a Musician', async () => {
-        // TODO - test creating a musician
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
-    })
+  test("can create a Musician", async () => {
+    const musician = await Musician.create({
+      name: "amelia fletcher",
+      instrument: "guitar",
+    });
+    expect(musician).toEqual(
+      expect.objectContaining({
+        name: "amelia fletcher",
+        instrument: "guitar",
+      })
+    );
+  });
 
-    test('can update a Band', async () => {
-        // TODO - test updating a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
-    })
+  test("can update a Band", async () => {
+    const band = await Band.create({ name: "Dolly Mixture", genre: "Twee" });
+    await band.update({genre: "indie pop"});
+    const updated = await Band.findByPk(band.id);
+    expect(updated).toEqual(expect.objectContaining({
+        name: "Dolly Mixture",      
+        genre: "Indie Pop"          
+    }));
+  });
 
-    test('can update a Musician', async () => {
-        // TODO - test updating a musician
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
-    })
+  test("can update a Musician", async () => {
+    const musician = await Musician.create({ name: "Amelia Fletcher", instrument: "Vocals" });
+    await musician.update({ instrument: "Guitar" });
+    const updatedMusician = await Musician.findByPk(musician.id);
+    expect(updatedMusician).toEqual(expect.objectContaining({
+        name: "Amelia Fletcher",      
+        instrument: "Guitar"          
+    }));
+});
 
-    test('can delete a Band', async () => {
-        // TODO - test deleting a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
-    })
+  test("can delete a Band", async () => {
+    const band = await Band.create({ name: "Dolly Mixture", genre: "Twee" });
+    await band.destroy();
 
-    test('can delete a Musician', async () => {
-        // TODO - test deleting a musician
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
-    })
-})
+    const deletedBand = await Band.findByPk(band.id);
+    expect(deletedBand).toBeNull();
+  });
+
+  test("can delete a Musician", async () => {
+    // TODO - test deleting a musician
+    expect("NO TEST").toBe("EXPECTED VALUE HERE");
+  });
+});
