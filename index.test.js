@@ -78,4 +78,51 @@ describe("Band, Musician, and Song Models", () => {
     const deletedMusician = await Musician.findByPk(musician.id);
     expect(deletedMusician).toBeNull();
   });
+
+  test("should allow a band to have multiple musicians", async () => {
+    const band = await Band.create({
+      name: "Can",
+      genre: "Indie",
+    });
+
+    const musician1 = await Musician.create({
+      name: "Amelia Fletcher",
+      instrument: "Guitar",
+    });
+    const musician2 = await Musician.create({
+      name: "Calvin Johnson",
+      instrument: "Guitar",
+    });
+
+    await band.addMusicians([musician1, musician2]);
+
+    const foundBand1Musicians = await band.getMusicians();
+
+    expect(foundBand1Musicians.length).toBe(2);
+  });
+
+  it("should allow multiple bands to share songs and each band to have multiple songs", async () => {
+    const band1 = await Band.create({ name: "Heavenly", genre: "Indie Pop" });
+    const band2 = await Band.create({
+      name: "Another Sunny Day",
+      genre: "Indie Pop",
+    });
+
+    const song1 = await Song.create({ title: "C Is the Heavenly Option" });
+    const song2 = await Song.create({ title: "I'm In Love With A Girl Who Doesn't Know I Exist" });
+
+    
+    await band1.addSongs([song1, song2]);
+    await band2.addSong(song1);
+
+    const band1Songs = await band1.getSongs();
+    expect(band1Songs.length).toBe(2);
+
+    // Verify songs associated with band2
+    const band2Songs = await band2.getSongs();
+    expect(band2Songs.length).toBe(1);
+    // expect(band2Songs.map((song) => song.title)).to.include(
+    //   "C Is the Heavenly Option"
+    // );
+  });
 });
